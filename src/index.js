@@ -2,11 +2,18 @@ import dotenv from "dotenv";
 dotenv.config({
   path: "./env",
 });
-import mongoose from "mongoose";
-import { DB_NAME } from "./constants.js";
 import connect_DB from "./db/index.js";
 
-connect_DB();
+// After connection establish then only over server start listening in the callback of connect_DB function
+connect_DB()
+  .then(() => {
+    app.listen(process.env.PORT || 8000, () => {
+      console.log(`The server is running at port ${process.env.PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log(`Connection failed ${err}`);
+  });
 
 // My first approcah to connect Database
 /*import exprss from "express";
