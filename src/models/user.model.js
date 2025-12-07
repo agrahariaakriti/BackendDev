@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      idex: true,
+      index: true,
     },
     password: {
       type: String,
@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
     // Watch history is the array of video ids which user has watched previously
     watchHistory: [
       {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Video",
       },
     ],
