@@ -67,7 +67,7 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 
 // Usinging jwt for generating access token and refresh token .All these methods present in mongoose
 userSchema.methods.generateAccessToken = async function () {
-  return await jwt.sign(
+  return  jwt.sign(
     {
       _id: this.id,
       email: this.email,
@@ -82,7 +82,7 @@ userSchema.methods.generateAccessToken = async function () {
 };
 
 userSchema.methods.generateRefreshToken = async function () {
-  return await jwt.sign(
+  return jwt.sign(
     {
       _id: this.id,
     },

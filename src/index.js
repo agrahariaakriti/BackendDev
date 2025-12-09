@@ -3,6 +3,7 @@ dotenv.config({
   path: "./env",
 });
 import connect_DB from "./db/index.js";
+import { app } from "./app.js";
 
 // After connection establish then only over server start listening in the callback of connect_DB function
 connect_DB()
