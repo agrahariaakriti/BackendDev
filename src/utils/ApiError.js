@@ -7,26 +7,24 @@ Without a custom error class, you would just throw strings or generic errors, li
 
 throw "Something went wrong"*/
 
-class ApiErro extends Error{
+class ApiError extends Error {
   constructor(
-    statusCode,//Error  400 ,500 this is the status code 
-    message="Something went wrong",//default message
-    errors=[],
-    stack=""
-
-  ){
-    super(message)
-    this.statusCode=statusCode
-    this.message=message
-    this.success=false
-    this.errors=errors
-    if (stack){
-      this.stack=stack
-    }
-    else{
-      Error.captureStackTrace(this,this.constructor)
+    statusCode, //Error  400 ,500 this is the status code
+    message = "Something went wrong", //default message
+    errors = [],
+    stack = ""
+  ) {
+    super(message);
+    this.statusCode = statusCode;
+    this.message = message;
+    this.success = false;
+    this.errors = errors;
+    if (stack) {
+      this.stack = stack;
+    } else {
+      Error.captureStackTrace(this, this.constructor);
     }
   }
 }
 
-export {ApiErro}
+export { ApiError };
