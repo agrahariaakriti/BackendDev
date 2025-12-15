@@ -50,9 +50,13 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// using pre hook  to hash the password before saving the user document
+// using pre hook  to hash the password before saving the user document.Mongoose middleware that runs before a document is saved to the database.
+// "save" refers to the .save() operation.
 
+// IMPORTANT:
+// isModified menas if password is change then hashed it oher wise dont hash it
 userSchema.pre("save", async function () {
+
   if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 10);

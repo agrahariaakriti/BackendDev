@@ -115,6 +115,7 @@ const LoginUser = asyncHandler(async (req, res) => {
   // Step 4: if password matches User get login.We send the access na d refresh token both to user
   // step 5 : send these token in the cookies
   // console.log(req.cookies);
+  console.log(req.user);
 
   const { email, username, password } = req.body;
   if (!username && !email) {
@@ -206,7 +207,6 @@ const LoggOutUser = async (req, res) => {
 };
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-
   const incommingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
 
@@ -253,4 +253,32 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, error?.message || "Invalid refresh token  ");
   }
 });
-export { registerUser, LoginUser, LoggOutUser, refreshAccessToken };
+
+// For changeing the password.Like if user is trying to change the password so definitly he/she must be login priviously . And in my login code i have save user in the req.body. Go and check it out .
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+  const user = req.user;
+  console.log("hyy parbhu ", req.body);
+  console.log("hyy parbhu ", req.user);
+
+  const { oldPassword, newPassword } = req.body;
+  const isPasswordValid = await user.isPasswordCorrect(oldPassword);
+
+  if (!isPasswordValid) {
+    throw new ApiError(400, "In Correct password");
+  }
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+  return res.status(200).json(
+    new ApiResponse(200, {
+      message: "Password change SucessFully",
+    })
+  );
+});
+
+export {
+  registerUser,
+  LoginUser,
+  LoggOutUser,
+  refreshAccessToken,
+  changeCurrentPassword,
+};

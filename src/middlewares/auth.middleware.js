@@ -11,7 +11,6 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     // A: Cookies (browser apps)
     //  B: Authorization header (mobile / API clients)
 
-
     const token =
       req.cookies?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");
@@ -27,9 +26,7 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     //2:- Account not deleted
     //3:-  So you verify user still exists.
 
-    const user = await User.findById(deCodedToken?._id).select(
-      "-password -refreshToken"
-    );
+    const user = await User.findById(deCodedToken?._id).select("-refreshToken");
 
     if (!user) {
       throw new ApiError(401, "Invalid Aceess Token");
@@ -42,6 +39,7 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     // Which user is logged in?
 
     req.user = user;
+
     next();
   } catch (error) {
     throw new ApiError(401, error?.message || "Invalid access");
@@ -50,9 +48,7 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
 
 export default verifyJWT;
 
-
-// Refresh token only used to generate the access token 
-// Refresh token are not sent every request thats not save bcoz 
+// Refresh token only used to generate the access token
+// Refresh token are not sent every request thats not save bcoz
 // If stolen → attacker has access for DAYS
 // Access tokens expire quickly → damage limited
-

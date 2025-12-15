@@ -4,6 +4,12 @@ import multer from "multer";
 // this file is basically a destination where ur file from the frontend will store in the disk storage.
 // And "./public /temp" this is the apth here the file will be stored temporarly before uploading it to cloudinary
 
+
+// VERY IMPORTANT 
+// Multer does three core jobs:
+//1: Intercepts the raw HTTP stream
+//2: Parses multipart boundaries
+//3: Separates text fields and file streams
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./public/temp");
