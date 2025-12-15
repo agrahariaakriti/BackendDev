@@ -32,30 +32,28 @@ cloudinary.config({
   // Click 'View API Keys' above to copy your API secret
 });
 
+const uploadOnCloudinary = async (localFilePath) => {
+  try {
+    if (!localFilePath) {
+      // console.log("THE PATH NOT FOUND BYEEEEE");
+      return null;
+    } else {
+      // upload the file to cloudinary
+      const response = await cloudinary.uploader.upload(localFilePath, {
+        resourse_type: "auto",
+      });
+      // file has bee uploaded suceessfully
+      console.log(`file uploaded on cloudinary ${response.secure_url}`);
+      fs.unlinkSync(localFilePath);
+      return response;
+    }
+  } catch (error) {
+    // Iff file not uplaoded successfull Then throw the error.Like if file not uplaoded successfull due to netwrok issue or any other issue.So we delete the local file anyway
 
-const uploadOnCloudinary=async (localFilePath)=>{
-try{
-if(!localFilePath)
-  return null
-else{
-// upload the file to cloudinary
-const response= await cloudinary.uploader.upload(localFilePath,
-  {
-    resourse_type:"auto"
+    fs.unlinkSync(localFilePath); //remove the loally save temp file as the uploaded operation get failed
+
+    return null;
   }
-)
-// file has bee uploaded suceessfully 
-console.log(`file uploaded on cloudinary ${response.url}`);
-return response
-}}
-catch(error){
-// Iff file not uplaoded successfull Then throw the error.Like if file not uplaoded successfull due to netwrok issue or any other issue.So we delete the local file anyway 
+};
 
-fs.unlinkSync(localFilePath)//remove the loally save temp file as the uploaded operation get failed 
-
-return null
-}
-}
-
-export {uploadOnCloudinary}
-
+export { uploadOnCloudinary };

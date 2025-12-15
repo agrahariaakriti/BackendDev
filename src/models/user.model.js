@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 const userSchema = new mongoose.Schema(
@@ -52,11 +52,10 @@ const userSchema = new mongoose.Schema(
 
 // using pre hook  to hash the password before saving the user document
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
 
 // this baseically used for checking the password enter by the user for lohgin is correct or not isPasswordCorrect send the true or false value
@@ -67,9 +66,9 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 
 // Usinging jwt for generating access token and refresh token .All these methods present in mongoose
 userSchema.methods.generateAccessToken = async function () {
-  return  jwt.sign(
+  return jwt.sign(
     {
-      _id: this.id,
+      _id: this._id,
       email: this.email,
       username: this.username,
       fullName: this.fullName,
@@ -84,7 +83,7 @@ userSchema.methods.generateAccessToken = async function () {
 userSchema.methods.generateRefreshToken = async function () {
   return jwt.sign(
     {
-      _id: this.id,
+      _id: this._id,
     },
     process.env.REFRESH_TOKEN_SECRET,
     {

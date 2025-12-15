@@ -6,7 +6,7 @@ import multer from "multer";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./public /temp");
+    cb(null, "./public/temp");
   },
 
   filename: function (req, file, cb) {
@@ -38,4 +38,3 @@ etc.
 This all line of code is used to give the unique name to the file which is send by the user to the server before storing it to local storage .
 
   */
-
