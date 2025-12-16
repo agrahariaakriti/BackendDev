@@ -37,11 +37,22 @@ const userSchema = new mongoose.Schema(
       },
     ],
     avatar: {
-      type: String, //we store the photos and video on cloudnary service and we store the url of that store image and vdo here {cloudinary is a third party service to store media files}
-      required: true,
+      url: {
+        type: String, //we store the photos and video on cloudnary service and we store the url of that store image and vdo here {cloudinary is a third party service to store media files}
+        required: true,
+      },
+      avatar_public_id: {
+        type: String,
+        require: true,
+      },
     },
     coverImage: {
-      type: String, //we store the photos and video on cloudnary service and we store the url of that store image and vdo here {cloudinary is a third party service to store media files}
+      url: {
+        type: String, //we store the photos and video on cloudnary service and we store the url of that store image and vdo here {cloudinary is a third party service to store media files}
+      },
+      coverImage_public_id: {
+        type: String,
+      },
     },
     refreshToken: {
       type: String,
@@ -56,7 +67,6 @@ const userSchema = new mongoose.Schema(
 // IMPORTANT:
 // isModified menas if password is change then hashed it oher wise dont hash it
 userSchema.pre("save", async function () {
-
   if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 10);

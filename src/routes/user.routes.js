@@ -5,7 +5,9 @@ import {
   registerUser,
   refreshAccessToken,
   changeCurrentPassword,
+  getCurrentUser,
 } from "../controllers/user.controllers.js";
+import UpdateProfileOrAvatar from "../controllers/updateFileOrProfile.controllers.js";
 import { upload } from "../middlewares/multer.middlware.js";
 import verifyJWT from "../middlewares/auth.middleware.js";
 
@@ -27,10 +29,19 @@ router.route("/logout").post(verifyJWT, LoggOutUser);
 //
 router.route("/refresh-token").post(refreshAccessToken);
 
-
 // req exists only for ONE HTTP request
 // After the response is sent → req is destroyed
 // Next API call = brand new req object
 router.route("/change-password").post(verifyJWT, changeCurrentPassword);
 
+router.route("/getCuurent").post(verifyJWT, getCurrentUser);
+router.route("/UpdateProfileImage").post(
+  verifyJWT,
+  upload.fields([
+    { name: "avatar", maxCount: 1 },
+    { name: "coverImage", maxCount: 1 },
+  ]),
+
+  UpdateProfileOrAvatar
+);
 export default router;

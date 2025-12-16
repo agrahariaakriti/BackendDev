@@ -81,8 +81,14 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const user = await User.create({
       fullName,
-      avatar: avatarCloudinary.url,
-      coverImage: coverImageCloudinary?.url || "",
+      avatar: {
+        url: avatarCloudinary.url,
+        avatar_public_id: avatarCloudinary?.public_id,
+      },
+      coverImage: {
+        url: coverImageCloudinary.url || "",
+        coverImage_public_id: coverImageCloudinary?.public_id || "",
+      },
       username: username.toLowerCase(),
       password,
       email,
@@ -181,7 +187,7 @@ const LoggOutUser = async (req, res) => {
   // as we have added the user in the req so Now at this point we have the access of the user
   const userId = req.user._id;
   // Now i gt the id from id we go to db and delete the refresh token
-  User.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     userId,
     {
       $set: {
@@ -214,13 +220,13 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Unorthorized request");
   }
   // After getting this refresh token we need to vertify this token.
-  const decodedAcessToken = jwt.verify(
+  const decodedRefreshToken = jwt.verify(
     incommingRefreshToken,
     process.env.REFRESH_TOKEN_SECRET
   );
 
   try {
-    const userId = decodedAcessToken._id;
+    const userId = decodedRefreshToken._id;
     const user = await User.findById(userId);
     if (!user) {
       throw new ApiError(400, "Invalid Refresh Token");
@@ -254,7 +260,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-// For changeing the password.Like if user is trying to change the password so definitly he/she must be login priviously . And in my login code i have save user in the req.body. Go and check it out .
+// For changeing the password.Like if user is trying to change the password so definitly he/she must be login priviously . And at the time of /changepassword rote i have inject auth middlware so it save the user in the req. Go and check it out .
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const user = req.user;
   console.log("hyy parbhu ", req.body);
@@ -274,11 +280,27 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     })
   );
 });
+// What getCurrentUser actually means
+// getCurrentUser =
+// “Based on the token you sent automatically (cookie), tell me who I am.”
+// That’s it.
+const getCurrentUser = asyncHandler(async (req, res) => {
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, (message = "Get current user"), (data = req.user))
+    );
+});
 
+// const updateUserAccountDetails = asyncHandler(async (req, res) => {
+
+//   const {fullName,email}
+// });
 export {
   registerUser,
   LoginUser,
   LoggOutUser,
   refreshAccessToken,
   changeCurrentPassword,
+  getCurrentUser,
 };

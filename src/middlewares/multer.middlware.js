@@ -4,8 +4,7 @@ import multer from "multer";
 // this file is basically a destination where ur file from the frontend will store in the disk storage.
 // And "./public /temp" this is the apth here the file will be stored temporarly before uploading it to cloudinary
 
-
-// VERY IMPORTANT 
+// VERY IMPORTANT
 // Multer does three core jobs:
 //1: Intercepts the raw HTTP stream
 //2: Parses multipart boundaries
@@ -13,9 +12,12 @@ import multer from "multer";
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./public/temp");
+    console.log(req);
   },
 
   filename: function (req, file, cb) {
+    console.log("Hyyyy aakriti ", file);
+
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(null, file.fieldname + "-" + uniqueSuffix);
   },
